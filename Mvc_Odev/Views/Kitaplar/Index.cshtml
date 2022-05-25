@@ -1,0 +1,78 @@
+﻿@*@model IEnumerable<DataAccess.Entities.Kitap>*@
+@model IEnumerable<KitapModel>
+
+@{
+    ViewData["Title"] = "Kitaplar";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["Mesaj"] != null)
+{
+    <p class="bg-success text-white">
+        @TempData["Mesaj"]
+    </p>
+}
+
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+@if (TempData["Error"] != null)
+{
+    <p class="text-danger">@TempData["Error"]</p>
+}
+
+
+<p>
+    <a asp-action="Create">Kitap ekle</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Adi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Aciklamasi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.YayımTarihiDisplay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BirimFiyatiDisplay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StokMiktari)
+            </th>
+           
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Aciklamasi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.YayımTarihiDisplay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BirimFiyatiDisplay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StokMiktari)
+            </td>
+           
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Düzenle</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Detay</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Sil</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

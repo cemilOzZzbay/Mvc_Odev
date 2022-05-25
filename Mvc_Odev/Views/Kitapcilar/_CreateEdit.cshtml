@@ -1,0 +1,30 @@
+﻿@model KitapciModel
+
+<h4>Kitapcı</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @using(Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Adi" class="control-label"></label>
+                <input asp-for="Adi" class="form-control" />
+                <span asp-validation-for="Adi" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="SanalMi" /> @Html.DisplayNameFor(model => model.SanalMiDisplay)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Kaydet" class="btn btn-primary" />
+            </div>
+        }
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Listeye Dön</a>
+</div>

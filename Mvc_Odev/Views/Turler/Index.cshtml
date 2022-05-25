@@ -1,0 +1,48 @@
+﻿@*@model IEnumerable<DataAccess.Entities.Tur>*@
+@model IEnumerable<TurModel>
+
+@{
+    ViewData["Title"] = "Kitap Türleri";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["Mesaj"] != null)
+{
+    <p class="text-primary">
+        @TempData["Mesaj"]
+    </p>
+}
+
+<p>
+    <a asp-action="Create">Kitap türü ekle </a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Adi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.KitapSayisiDisplay)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.KitapSayisiDisplay)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Düzenle</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Detay</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Sil</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

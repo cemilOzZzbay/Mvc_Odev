@@ -1,0 +1,58 @@
+﻿@*@model IEnumerable<DataAccess.Entities.Kitapci>*@
+@model IEnumerable<KitapciModel>
+
+@{
+    ViewData["Title"] = "Kitapcılar";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["Mesaj"] != null)
+{
+    <p class="bg-success text-white">
+        @TempData["Mesaj"]
+    </p>
+}
+
+@if (TempData["Success"] != null)
+{
+    <p class="text-success">@TempData["Success"]</p>
+}
+@if (TempData["Error"] != null)
+{
+    <p class="text-danger">@TempData["Error"]</p>
+}
+
+<p>
+    <a asp-action="Create">Kitapcı Ekle</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Adi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SanalMiDisplay)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SanalMi)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Düzenle</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Detay</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Sil</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
