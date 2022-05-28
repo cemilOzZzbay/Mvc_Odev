@@ -1,6 +1,7 @@
 ﻿using AppCore.Business.Models;
 using Business.Models;
 using Business.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Mvc_Odev.Controllers
@@ -14,17 +15,21 @@ namespace Mvc_Odev.Controllers
             _turService = turService;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             List<TurModel> model = _turService.Query().ToList();
             return View(model);
         }
+        
         [HttpGet]
+        [Authorize(Roles ="Admin")]
         public IActionResult Create()
         {
             return View();
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public IActionResult Create(string Adi)
         {
@@ -37,7 +42,9 @@ namespace Mvc_Odev.Controllers
                 return RedirectToAction(nameof(Index));
             return View("Hata", result.Message);
         }
+        
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -48,6 +55,7 @@ namespace Mvc_Odev.Controllers
             return View(model);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(TurModel model)
         {
@@ -60,6 +68,8 @@ namespace Mvc_Odev.Controllers
             }
             return View(model);
         }
+        
+            [Authorize(Roles = "Admin")]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -69,6 +79,8 @@ namespace Mvc_Odev.Controllers
                 return View("Hata", "Tür bulunamadı!");
             return View(model);
         }
+        
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int? id)
         {
             if (id == null)

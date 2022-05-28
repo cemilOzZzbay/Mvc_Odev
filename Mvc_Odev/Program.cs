@@ -1,15 +1,30 @@
 using Business.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+#region Authentication
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(config =>
+    {
+        config.LoginPath = "/Hesaplar/Giris";
+        config.AccessDeniedPath = "/Hesaplar/YetkisizIslem";
+        config.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        config.SlidingExpiration = true;
+    });
+
+#endregion
+
 builder.Services.AddScoped<ITurService, TurService>();
 builder.Services.AddScoped<IKitapService, KitapService>();
 builder.Services.AddScoped<IKitapciService, KitapciService>();
 builder.Services.AddScoped<IHesapService, HesapService>();
 builder.Services.AddScoped<IKullaniciService, KullaniciService>();
+builder.Services.AddScoped<IUlkeService, UlkeService>();
 
 var app = builder.Build();
 
@@ -25,6 +40,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+#region Authentication
+
+app.UseAuthentication();
+
+#endregion
 
 app.UseAuthorization();
 

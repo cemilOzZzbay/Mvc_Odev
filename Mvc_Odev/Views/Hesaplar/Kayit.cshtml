@@ -1,0 +1,91 @@
+﻿@*@model DataAccess.Entities.Kullanici*@
+@model KullaniciKayitModel
+@using DataAccess.Entities.Enums
+
+
+@{
+    ViewData["Title"] = "Kayıt";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>Kullanıcı</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Kayit">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="KullaniciAdi" class="control-label"></label>
+                <input asp-for="KullaniciAdi" class="form-control" />
+                <span asp-validation-for="KullaniciAdi" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Sifre" class="control-label"></label>
+                <input asp-for="Sifre" class="form-control" type="password" />
+                <span asp-validation-for="Sifre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SifreOnay" class="control-label"></label>
+                <input asp-for="SifreOnay" class="form-control" type="password" />
+                <span asp-validation-for="SifreOnay" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Eposta" class="control-label"></label>
+                <input asp-for="Eposta" class="form-control" type="email" />
+                <span asp-validation-for="Eposta" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Adres" class="control-label"></label>
+                <textarea asp-for="Adres" class="form-control"></textarea>
+                <span asp-validation-for="Adres" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cinsiyet" class="control-label"></label>
+                <input asp-for="Cinsiyet" type="radio" value="@((int)Cinsiyet.Kadın)" checked/>@Cinsiyet.Kadın
+                &nbsp;
+                <input asp-for="Cinsiyet" type="radio" value="@((int)Cinsiyet.Erkek)" />@Cinsiyet.Erkek
+                <span asp-validation-for="Cinsiyet" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UlkeId" class="control-label"></label>
+                <div class="col-5">
+                    <select asp-for="UlkeId" asp-items="ViewBag.Ulkeler" class="form-control">
+				        <option value="">-- Seçiniz --</option>
+				    </select>
+                    <span asp-validation-for="UlkeId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="SehirId" class="control-label"></label>
+                <div class="col-5">
+                    <select asp-for="SehirId" asp-items="ViewBag.Sehirler" class="form-control">
+				        <option value="">-- Ülke Seçiniz --</option>
+				    </select>
+                    <span asp-validation-for="SehirId" class="text-danger"></span>
+                </div>
+            </div>&nbsp;&nbsp;
+            
+            @*<div class="form-group">
+                <label asp-for="RolId" class="control-label"></label>
+                <select asp-for="RolId" class ="form-control" asp-items="ViewBag.RolId"></select>
+            </div>*@
+            
+            <div class="form-group">
+                <input type="submit" value="Kaydet" class="btn btn-primary" />
+                &nbsp;&nbsp;
+                <button type="reset" class="btn btn-outline-primary">Temizle</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*<div>
+    <a asp-action="Index">Back to List</a>
+</div>*@
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @*<partial name="_ValidationScriptsPartial" />*@
+}

@@ -28,7 +28,18 @@ namespace Business.Services
 
         public Result Delete(int id)
         {
-            Repo.Delete(kitapci => kitapci.Id == id);
+            Kitapci entity = Repo.Query(kitapci => kitapci.Id == id, "KitapKitapcilar").SingleOrDefault();
+            if (entity.KitapKitapcilar != null && entity.KitapKitapcilar.Count > 0)
+            {
+                RepoBase<KitapKitapci, KitapContext> kitapKitapciRepo = new Repo<KitapKitapci, KitapContext>();
+                foreach (var kitapKitapci in entity.KitapKitapcilar)
+                {
+                    kitapKitapciRepo.Delete(kitapKitapci, false);
+                }
+                kitapKitapciRepo.Save();
+                kitapKitapciRepo.Dispose();
+            }
+            Repo.Delete(entity);
             return new SuccessResult("Kitapcı başarıyla silindi.");
         }
 

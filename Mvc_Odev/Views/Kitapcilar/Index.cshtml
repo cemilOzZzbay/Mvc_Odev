@@ -23,9 +23,13 @@
     <p class="text-danger">@TempData["Error"]</p>
 }
 
-<p>
-    <a asp-action="Create">Kitapcı Ekle</a>
-</p>
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <p>
+         <a asp-action="Create">Kitapcı ekle</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -48,9 +52,15 @@
                 @Html.DisplayFor(modelItem => item.SanalMi)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Düzenle</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Detay</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Sil</a>
+                @if (User.Identity.IsAuthenticated)
+                { 
+                    <a asp-action="Details" asp-route-id="@item.Id">Detay</a> 
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Düzenle</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Sil</a>
+                    }
+                }
             </td>
         </tr>
 }

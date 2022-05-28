@@ -20,9 +20,14 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Turler" asp-action="Index">Kitap Türleri</a>
-                        </li>
+                        
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Turler" asp-action="Index">Kitap Türleri</a>
+                            </li>
+                        }
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Kitaplar" asp-action="Index">Kitaplar</a>
                         </li>
@@ -40,22 +45,32 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                   <li class="nav-item">
-                        @*<a class="nav-link text-dark" asp-area="" asp-controller="Turler" asp-action="Index">Kitap Türleri</a>*@
-                        <a class="a-navbar"asp-action="Kayit" asp-controller="Hesaplar">Kayıt</a>
-                   </li>&nbsp &nbsp
-                   <li class="nav-item">
-                        @*<a class="nav-link text-dark" asp-area="" asp-controller="Kitaplar" asp-action="Index">Kitaplar</a>*@
-                        <a class="a-navbar" asp-action="Giris" asp-controller="Hesaplar">Giriş</a>
-                   </li>&nbsp &nbsp
-                   <li class="nav-item">
-                        <label class="a-navbar"> KullanıcıAdı</label>
-                   </li>&nbsp &nbsp
-                   <li class="nav-item">
-                        <a class="a-navbar text-danger" asp-controller="Database" asp-action="Seed"><b>Verileri Sıfırla</b></a>
-                   </li>
-                 </ul>  
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a asp-action="Kayit" asp-controller="Hesaplar">Kayıt</a>
+                            </li>@:&nbsp &nbsp    
+                            <li class="nav-item">
+                                <a asp-action="Giris" asp-controller="Hesaplar">Giriş</a>
+                            </li>@:&nbsp &nbsp    
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <label>@User.Identity.Name</label>
+                            </li>@:&nbsp &nbsp
+                            <li>
+                                <a asp-action="Cikis" asp-controller="Hesaplar">Çıkış</a>
+                            </li>@:&nbsp &nbsp
+                        }
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="text-danger" asp-controller="Database" asp-action="Seed"><b>Verileri Sıfırla</b></a>
+                            </li>
+                        }
+                    </ul>  
                 </div>
             </div>
         </nav>     

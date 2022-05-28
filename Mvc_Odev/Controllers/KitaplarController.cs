@@ -1,10 +1,12 @@
 ﻿using Business.Models;
 using Business.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Mvc_Odev.Controllers
 {
+    [Authorize]
     public class KitaplarController : Controller
     {
         private readonly IKitapService _kitapService;
@@ -16,12 +18,15 @@ namespace Mvc_Odev.Controllers
             _turService = turService;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             var model = _kitapService.Query().ToList();
             return View(model);
         }
+        
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["TurId"] = new SelectList(_turService.Query().ToList(), "Id", "Adi");
@@ -34,6 +39,7 @@ namespace Mvc_Odev.Controllers
             return View(model);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public IActionResult Create(KitapModel kitap)
         {
@@ -50,7 +56,9 @@ namespace Mvc_Odev.Controllers
             ViewData["TurId"] = new SelectList(_turService.Query().ToList(), "Id", "Adi", kitap.TurId);
             return View(kitap);
         }
+        
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -61,7 +69,9 @@ namespace Mvc_Odev.Controllers
             ViewBag.TurId = new SelectList(_turService.Query().ToList(), "Id", "Adi", kitap.TurId);
             return View(kitap);
         }
+        
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(KitapModel kitap)
         {
@@ -75,6 +85,7 @@ namespace Mvc_Odev.Controllers
             ViewBag.TurId = new SelectList(_turService.Query().ToList(), "Id", "Adi", kitap.TurId.Value);
             return View(kitap);
         }
+
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -88,8 +99,12 @@ namespace Mvc_Odev.Controllers
             }
             return View(kitap);
         }
+        //[Authorize(Roles = "Admin")]
         public IActionResult Delete(int? id)
         {
+            if (!(User.Identity.IsAuthenticated && User.IsInRole("Admin")))
+                return RedirectToAction("YetkisizIslem", "Hesaplar");
+            
             if (id == null)
             {
                 return View("Hata", "Id gereklidir!");

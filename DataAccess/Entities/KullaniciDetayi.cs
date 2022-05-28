@@ -20,5 +20,11 @@ namespace DataAccess.Entities
         public string Adres { get; set; }
 
         public Cinsiyet? Cinsiyet { get; set; }
+
+        public int UlkeId { get; set; }
+        public Ulke Ulke { get; set; }
+
+        public int SehirId { get; set; }
+        public Sehir Sehir { get; set; }
     }
 }

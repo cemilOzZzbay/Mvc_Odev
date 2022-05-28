@@ -31,12 +31,14 @@ namespace Business.Services
 
         public IQueryable<KullaniciModel> Query()
         {
-            return Repo.Query().Select(kullaniciEntity => new KullaniciModel() 
+            return Repo.Query("Rol").Select(kullaniciEntity => new KullaniciModel() 
             {
                Id = kullaniciEntity.Id,
                KullaniciAdi = kullaniciEntity.KullaniciAdi,
                RolId = kullaniciEntity.RolId,
-               Sifre = kullaniciEntity.Sifre
+               Sifre = kullaniciEntity.Sifre,
+
+               RolAdiDisplay = kullaniciEntity.Rol.Adi
             });
         }
 

@@ -8,6 +8,13 @@ using System.Text;
 
 namespace Mvc_Odev.Controllers
 {
+    //public void ObsoleteTest()
+    //{
+    //    Seed();
+    //}
+
+    //[NonAction] // aksiyonun web uygulaması üzerinden çağırılmasını engeller
+    //[Obsolete("Bu method artık kullanılmamaktadır!")]
     public class DatabaseController : Controller
     {
         public IActionResult Seed()
@@ -32,6 +39,12 @@ namespace Mvc_Odev.Controllers
                 var rolEntities = db.Roller.ToList();
                 db.Roller.RemoveRange(rolEntities);
 
+                var sehirEntities = db.Sehirler.ToList();
+                db.Sehirler.RemoveRange(sehirEntities);
+
+                var ulkeEntities = db.Ulkeler.ToList();
+                db.Ulkeler.RemoveRange(ulkeEntities);
+
 
                 if (turlerEntity.Count > 0)
                 {
@@ -40,6 +53,8 @@ namespace Mvc_Odev.Controllers
                     db.Database.ExecuteSqlRaw("dbcc checkident ('Kitapcilar', reseed, 0)");
                     db.Database.ExecuteSqlRaw("dbcc checkident ('Kullanicilar', reseed, 0)");
                     db.Database.ExecuteSqlRaw("dbcc checkident ('Roller', reseed, 0)");
+                    db.Database.ExecuteSqlRaw("dbcc checkident ('Sehirler', reseed, 0)");
+                    db.Database.ExecuteSqlRaw("dbcc checkident ('Ulkeler', reseed, 0)");
                 }
 
                 db.Turler.Add(new Tur()
@@ -80,8 +95,44 @@ namespace Mvc_Odev.Controllers
                     Adi = "B Kitabevi",
                     SanalMi = false
                 });
+
+                db.Ulkeler.Add(new Ulke()
+                {
+                    Adi = "Türkiye",
+                    Sehirler = new List<Sehir>()
+                    {
+                        new Sehir()
+                        {
+                            Adi = "Ankara"
+                        },
+                        new Sehir()
+                        {
+                            Adi = "İstanbul"
+                        },
+                        new Sehir()
+                        {
+                            Adi = "İzmir"
+                        }
+                    }
+                });
+                db.Ulkeler.Add(new Ulke()
+                {
+                    Adi = "Amerika Birleşik Devletleri",
+                    Sehirler = new List<Sehir>()
+                    {
+                        new Sehir()
+                        {
+                            Adi = "New York"
+                        },
+                        new Sehir()
+                        {
+                            Adi = "Los Angeles"
+                        }
+                    }
+                });
+
                 db.SaveChanges();
-                
+
                 db.Roller.Add(new Rol()
                 {
                     Adi = "Admin",
@@ -96,7 +147,9 @@ namespace Mvc_Odev.Controllers
                             {
                                 Adres = "Denizin ortası",
                                 Cinsiyet = Cinsiyet.Erkek,
-                                Eposta = "guvercin1@hotmail.com"
+                                Eposta = "guvercin1@hotmail.com",
+                                UlkeId = db.Ulkeler.SingleOrDefault(ulke => ulke.Adi == "Türkiye").Id,
+                                SehirId = db.Sehirler.SingleOrDefault(sehir => sehir.Adi == "Ankara").Id
                             }
                         }
                     }
@@ -115,7 +168,9 @@ namespace Mvc_Odev.Controllers
                             {
                                 Adres = "Dağın başı",
                                 Cinsiyet = Cinsiyet.Erkek,
-                                Eposta = "guvercin2@hotmail.com"
+                                Eposta = "guvercin2@hotmail.com",
+                                UlkeId = db.Ulkeler.SingleOrDefault(ulke => ulke.Adi == "Amerika Birleşik Devletleri").Id,
+                                SehirId = db.Sehirler.SingleOrDefault(sehir => sehir.Adi == "Los Angeles").Id
                             }
                         }
                     }

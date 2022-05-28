@@ -20,5 +20,8 @@ namespace Business.Models
         
         [DisplayName("Rol")]
         public int RolId { get; set; }
+        
+        [DisplayName("Rol Adı")]
+        public string RolAdiDisplay { get; set; }
     }
 }
