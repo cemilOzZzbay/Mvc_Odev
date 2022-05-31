@@ -16,7 +16,27 @@ namespace Business.Services
 
         public Result Add(KullaniciModel model)
         {
-            throw new NotImplementedException();
+            if (Repo.EntityExists(k => k.KullaniciAdi == model.KullaniciAdi))
+                return new ErrorResult("Girilen kullanıcı adına sahip kayıt bulunmaktadır!");
+            if (Repo.EntityExists(k => k.KullaniciDetayi.Eposta.ToLower() == model.Eposta.ToLower().Trim()))
+                return new ErrorResult("Girilen e-postaya sahip kayıt bulunmaktadır!");
+            Kullanici entity = new Kullanici()
+            {
+                AktifMi = model.AktifMi,
+                KullaniciAdi = model.KullaniciAdi,
+                RolId = model.RolId,
+                Sifre = model.Sifre,
+                KullaniciDetayi = new KullaniciDetayi()
+                {
+                    Adres = model.Adres,
+                    Cinsiyet = model.Cinsiyet,
+                    Eposta = model.Eposta,
+                    SehirId = model.SehirId.Value,
+                    UlkeId = model.UlkeId.Value
+                }
+            };
+            Repo.Add(entity);
+            return new SuccessResult();
         }
 
         public Result Delete(int id)
@@ -35,9 +55,10 @@ namespace Business.Services
             {
                Id = kullaniciEntity.Id,
                KullaniciAdi = kullaniciEntity.KullaniciAdi,
-               RolId = kullaniciEntity.RolId,
                Sifre = kullaniciEntity.Sifre,
-
+               AktifMi = kullaniciEntity.AktifMi,
+               RolId = kullaniciEntity.RolId,
+                
                RolAdiDisplay = kullaniciEntity.Rol.Adi
             });
         }

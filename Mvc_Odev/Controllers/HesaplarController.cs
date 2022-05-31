@@ -12,10 +12,13 @@ namespace Mvc_Odev.Controllers
     {
         private readonly IHesapService _hesapService;
         private readonly IUlkeService _ulkeService;
-        public HesaplarController(IHesapService hesapService, IUlkeService ulkeService)
+        private readonly ISehirService _sehirService;
+
+        public HesaplarController(IHesapService hesapService, IUlkeService ulkeService, ISehirService sehirService)
         {
             _hesapService = hesapService;
             _ulkeService = ulkeService;
+            _sehirService = sehirService;
         }
 
         [HttpGet]
@@ -55,10 +58,32 @@ namespace Mvc_Odev.Controllers
         {
             return View("Hata", "Bu işlem için yetkiniz bulunmamaktadır!");
         }
+        
+        [HttpGet]
         public IActionResult Kayit()
         {
             ViewBag.Ulkeler = new SelectList(_ulkeService.Query().ToList(), "Id", "Adi");
             return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Kayit(KullaniciKayitModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = _hesapService.Kayit(model);
+                if (result.IsSuccessful)
+                    return RedirectToAction(nameof(Giris));
+                ModelState.AddModelError("", result.Message);
+            }
+            ViewBag.Ulkeler = new SelectList(_ulkeService.Query().ToList(), "Id", "Adi", model.UlkeId);
+
+            //var sehirResult = _sehirService.List(model.UlkeId.HasValue ? model.UlkeId.Value : -1);
+            var sehirResult = _sehirService.List(model.UlkeId ?? -1);
+
+            ViewBag.Sehirler = new SelectList(sehirResult.Data, "Id", "Adi", model.SehirId);
+
+            return View(model);
         }
     }
 }

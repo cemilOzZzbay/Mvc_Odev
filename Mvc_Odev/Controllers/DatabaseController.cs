@@ -142,6 +142,7 @@ namespace Mvc_Odev.Controllers
                         {
                             KullaniciAdi = "okişi",
                             Sifre = "okişi",
+                            AktifMi = true,
                             
                             KullaniciDetayi = new KullaniciDetayi()
                             {
@@ -163,7 +164,7 @@ namespace Mvc_Odev.Controllers
                         {
                             KullaniciAdi = "şukişi",
                             Sifre = "şukişi",
-                            
+                            AktifMi = true,
                             KullaniciDetayi = new KullaniciDetayi()
                             {
                                 Adres = "Dağın başı",

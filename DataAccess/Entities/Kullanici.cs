@@ -14,6 +14,8 @@ namespace DataAccess.Entities
         [StringLength(10)]
         public string Sifre { get; set; }
 
+        public bool AktifMi { get; set; }
+
         public int RolId { get; set; }
         public Rol Rol { get; set; }
 

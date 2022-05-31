@@ -51,16 +51,16 @@
             <div class="form-group">
                 <label asp-for="UlkeId" class="control-label"></label>
                 <div class="col-5">
-                    <select asp-for="UlkeId" asp-items="ViewBag.Ulkeler" class="form-control">
+                    <select asp-for="UlkeId" asp-items="ViewBag.Ulkeler" class="form-control" id="ulkeler">
 				        <option value="">-- Seçiniz --</option>
 				    </select>
-                    <span asp-validation-for="UlkeId" class="text-danger"></span>
+                    <span asp-validation-for="UlkeId" class="text-danger" id="ulkemesaj"></span>
                 </div>
             </div>
             <div class="form-group">
                 <label asp-for="SehirId" class="control-label"></label>
                 <div class="col-5">
-                    <select asp-for="SehirId" asp-items="ViewBag.Sehirler" class="form-control">
+                    <select asp-for="SehirId" asp-items="ViewBag.Sehirler" class="form-control sehirler">
 				        <option value="">-- Ülke Seçiniz --</option>
 				    </select>
                     <span asp-validation-for="SehirId" class="text-danger"></span>
@@ -85,7 +85,52 @@
     <a asp-action="Index">Back to List</a>
 </div>*@
 
-@section Scripts {
+@section Scripts 
+{
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     @*<partial name="_ValidationScriptsPartial" />*@
+
+<script>
+     $(function() {
+        $("#ulkeler").change(function() {
+            var seciliUlkeId = $("#ulkeler").val();
+             $(".sehirler").empty();
+            if (seciliUlkeId == "") {
+                $("#ulkemesaj").text("Ülke seçiniz...");
+                $(".sehirler").append('<option value="">-- Ülke Seçiniz --</option>');
+            }
+            else {
+                $.getJSON(
+                    "/Sehirler/SehirlerGet",
+                    { ulkeId: seciliUlkeId },
+                    function(sehirler) {
+                        $(".sehirler").append('<option value="">-- Şehir Seçiniz --</option>');
+                        for (var i = 0; i < sehirler.length; i++) {
+                            $(".sehirler").append('<option value="' + sehirler[i].id + '">' + sehirler[i].adi + '</option>');
+                        }
+                    }
+                );
+            }
+        });
+     });
+
+    //$.ajax({
+    //        type: "post",
+    //        url: "/Sehirler/SehirlerPost",
+    //        data: { ulkeId: seciliUlkeId },
+    //        cache: false,
+    //        //contentType: "application/json;charset=utf-8;",
+    //        dataType: "json",
+    //        success: function(sehirler) {
+    //            $(".sehirler").append('<option value="">-- Şehir Seçiniz --</option>');
+    //            for (var i = 0; i < sehirler.length; i++) {
+    //            $(".sehirler").append('<option value="' + sehirler[i].id + '">' + sehirler[i].adi + '</option>');
+    //            }
+    //        },
+    //        error: function() {
+    //            alert("İşlem sırasında hata oldu!");
+    //        }
+    //});
+</script>
+
 }

@@ -46,7 +46,7 @@ namespace Business.Services
 
         public IQueryable<KitapModel> Query()
         {
-            return Repo.Query().OrderBy(kitap => kitap.Adi).Select(kitap => new KitapModel()
+            return Repo.Query("Tur").OrderBy(kitap => kitap.Adi).Select(kitap => new KitapModel()
             {
                 Id = kitap.Id,
                 Adi = kitap.Adi,
@@ -68,12 +68,14 @@ namespace Business.Services
                 return new ErrorResult("Girdiğiniz kitap adına sahip kayıt bulunmaktadır!");
 
             Kitap entity = Repo.Query(kitap => kitap.Id == model.Id).SingleOrDefault();
+    
             entity.Adi = model.Adi.Trim();
             entity.Aciklamasi = model.Aciklamasi?.Trim();
             entity.YayımTarihi = model.YayımTarihi;
             entity.BirimFiyati = model.BirimFiyati.Value;
             entity.StokMiktari = model.StokMiktari.Value;
             entity.TurId = model.TurId.Value;
+            
             Repo.Update(entity);
             return new SuccessResult();
         }
