@@ -1,8 +1,10 @@
 ﻿using Business.Models;
+using Business.Models.Filters;
 using Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Mvc_Odev.Models;
 
 namespace Mvc_Odev.Controllers
 {
@@ -11,18 +13,27 @@ namespace Mvc_Odev.Controllers
     {
         private readonly IKitapService _kitapService;
         private readonly ITurService _turService;
+        private readonly IKitapciService _kitapciService;
 
-        public KitaplarController(IKitapService kitapService, ITurService turService)
+        public KitaplarController(IKitapService kitapService, ITurService turService, IKitapciService kitapciService)
         {
             _kitapService = kitapService;
             _turService = turService;
+            _kitapciService = kitapciService;
         }
 
         [AllowAnonymous]
-        public IActionResult Index()
+        public IActionResult Index(KitapFiltreModel filtre)
         {
-            var model = _kitapService.Query().ToList();
-            return View(model);
+            var result = _kitapService.List(filtre);
+            KitaplarIndexViewModel viewModel = new KitaplarIndexViewModel()
+            {
+                Kitaplar = result.Data,
+                Turler = new SelectList(_turService.Query().ToList(),"Id","Adi"),
+                Filtre = filtre
+            };
+            //return View(model);
+            return View(viewModel);
         }
         
         [HttpGet]
@@ -30,7 +41,8 @@ namespace Mvc_Odev.Controllers
         public IActionResult Create()
         {
             ViewData["TurId"] = new SelectList(_turService.Query().ToList(), "Id", "Adi");
-
+            ViewBag.Kitapcilar = new MultiSelectList(_kitapciService.Query().ToList(), "Id", "Adi");
+            
             KitapModel model = new KitapModel()
             {
                 BirimFiyati = 0,
@@ -54,6 +66,7 @@ namespace Mvc_Odev.Controllers
                 ModelState.AddModelError("", result.Message);
             }
             ViewData["TurId"] = new SelectList(_turService.Query().ToList(), "Id", "Adi", kitap.TurId);
+            ViewBag.Kitapcilar = new MultiSelectList(_kitapciService.Query().ToList(), "Id", "Adi",kitap.KitapciIdleri);
             return View(kitap);
         }
         
@@ -67,6 +80,7 @@ namespace Mvc_Odev.Controllers
             if (kitap == null)
                 return View("Hata", "Kitap bulunamadı!");
             ViewBag.TurId = new SelectList(_turService.Query().ToList(), "Id", "Adi", kitap.TurId);
+            ViewBag.Kitapcilar = new MultiSelectList(_kitapciService.Query().ToList(), "Id", "Adi", kitap.KitapciIdleri);
             return View(kitap);
         }
         
@@ -83,6 +97,7 @@ namespace Mvc_Odev.Controllers
                 ModelState.AddModelError("", result.Message);
             }
             ViewBag.TurId = new SelectList(_turService.Query().ToList(), "Id", "Adi", kitap.TurId.Value);
+            ViewBag.Kitapcilar = new MultiSelectList(_kitapciService.Query().ToList(), "Id", "Adi", kitap.KitapciIdleri);
             return View(kitap);
         }
 

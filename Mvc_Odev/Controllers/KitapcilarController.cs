@@ -51,12 +51,7 @@ namespace Mvc_Odev.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult Edit(int? id)
         {
-            if (id == null)
-                return View("Hata", "Id gereklidir!");
             KitapciModel model = _kitapciService.Query().SingleOrDefault(kitapci => kitapci.Id == id);
-            if (model == null)
-                return View("Hata", "Kitapcı bulunamadı.");
-
             return View(model);
         }
         [HttpPost]
@@ -76,24 +71,25 @@ namespace Mvc_Odev.Controllers
         
         public IActionResult Details(int? id)
         {
-            if (id == null)
-                return View("Hata", "Id gereklidir!");
             KitapciModel model = _kitapciService.Query().SingleOrDefault(kitapci => kitapci.Id == id.Value);
-            if (model == null)
-                return View("Hata", "Kitapcı bulunamadı!");
             return View(model);
         }
-        
-        //[Authorize(Roles = "Admin")]
+
+        [HttpGet]
         public IActionResult Delete(int? id)
+        {
+            KitapciModel model = _kitapciService.Query().SingleOrDefault(kitapci => kitapci.Id == id.Value);
+            return View(model);
+        }
+        //[Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("Delete")]
+        public IActionResult DeleteConfirmed(int? id)
         {
             if (!(User.Identity.IsAuthenticated && User.IsInRole("Admin")))
                 return RedirectToAction("YetkisizIslem", "Hesaplar");
 
-            if (id == null)
-            {
-                return View("Hata", "Id gereklidir!");
-            }
             var result = _kitapciService.Delete(id.Value);
             if (result.IsSuccessful)
                 TempData["Success"] = result.Message;

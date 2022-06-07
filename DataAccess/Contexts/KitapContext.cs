@@ -1,4 +1,5 @@
-﻿using DataAccess.Entities;
+﻿using AppCore.DataAccess.Configs;
+using DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Contexts
@@ -17,7 +18,9 @@ namespace DataAccess.Contexts
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("server=DESKTOP-2SEU97G;database=KitapDB;user id=sa;password=as;multipleactiveresultsets=true;");
+            string connectionString = "server=DESKTOP-2SEU97G;database=KitapDB;user id=sa;password=as;multipleactiveresultsets=true;";
+            if (!string.IsNullOrWhiteSpace(ConnectionConfig.ConnectionString))
+                optionsBuilder.UseSqlServer(connectionString);
         }
        
         protected override void OnModelCreating(ModelBuilder modelBuilder)

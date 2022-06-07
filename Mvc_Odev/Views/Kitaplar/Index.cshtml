@@ -1,5 +1,6 @@
 ﻿@*@model IEnumerable<DataAccess.Entities.Kitap>*@
-@model IEnumerable<KitapModel>
+@*@model IEnumerable<KitapModel>*@
+@model KitaplarIndexViewModel
 
 @{
     ViewData["Title"] = "Kitaplar";
@@ -30,32 +31,103 @@
     </p>
 }
 
+
+<form asp-action="Index" method="get"> 
+    <div class="row" style="padding-bottom: 30px; padding-top: 30px;">
+        <div class="col-1">
+            <label asp-for="Filtre.KitapAdi"></label>
+        </div>
+        <div class="col-3">
+            <input asp-for="Filtre.KitapAdi" class="form-control" />
+        </div>
+        <div class="col-1">
+            <label asp-for="Filtre.TurId"></label>
+        </div>
+        <div class="col-3">
+            <select asp-for="Filtre.TurId" class="form-control" asp-items="@Model.Turler">
+                <option value="">--Tümü--</option>
+            </select> 
+        </div>
+        <div class="col-1">
+            <label asp-for="Filtre.BirimFiyatiBaslangic"></label>
+        </div>
+        <div class="col-3">
+            <div class="input-group">
+                <input asp-for="Filtre.BirimFiyatiBaslangic" class="form-control" />
+                <span class="input-group-text">-</span>
+                <input asp-for="Filtre.BirimFiyatiBitis" class="form-control" />
+            </div>
+        </div>
+        <div>
+            <br />
+        </div>
+        <div class="col-1">
+            <label asp-for="Filtre.StokMiktariBaslangic"></label>
+        </div>
+        <div class="col-3">
+            <div class="input-group">
+                <input asp-for="Filtre.StokMiktariBaslangic" class="form-control" />
+                <span class="input-group-text">-</span>
+                <input asp-for="Filtre.StokMiktariBitis" class="form-control" />
+            </div>
+        </div>
+        <div class="col-1">
+            <label asp-for="Filtre.YayımTarihiBaslangic"></label>
+        </div>
+        <div class="col-3">
+            <div class="input-group">
+                <input asp-for="Filtre.YayımTarihiBaslangic" class="form-control" type="date"  />
+                <span class="input-group-text">-</span>
+                <input asp-for="Filtre.YayımTarihiBitis" class="form-control" type="date"  />
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding-bottom: 30px;">
+        <div class="col-12"> 
+            <input type="submit" value="Ara" class="btn btn-primary" />
+		    &nbsp;&nbsp;
+            <a asp-action="Index" class="btn btn-outline-primary">Temizle</a>
+        </div>
+    </div>
+</form>
+
+
+@if (Model.Kitaplar != null && Model.Kitaplar.Count > 0)
+{
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Adi)
+                @Html.DisplayNameFor(model => model.Kitaplar.FirstOrDefault().Adi)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Aciklamasi)
+                @Html.DisplayNameFor(model => model.Kitaplar.FirstOrDefault().TurAdiDisplay)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.YayımTarihiDisplay)
+                @Html.DisplayNameFor(model => model.Kitaplar.FirstOrDefault().Aciklamasi)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BirimFiyatiDisplay)
+                @Html.DisplayNameFor(model => model.Kitaplar.FirstOrDefault().YayımTarihiDisplay)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StokMiktari)
+                @Html.DisplayNameFor(model => model.Kitaplar.FirstOrDefault().BirimFiyatiDisplay)
             </th>
-           
+            <th>
+                @Html.DisplayNameFor(model => model.Kitaplar.FirstOrDefault().StokMiktari)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Kitaplar.FirstOrDefault().KitapciAdlariDisplay)
+            </th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Kitaplar) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Adi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TurAdiDisplay)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Aciklamasi)
@@ -69,7 +141,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.StokMiktari)
             </td>
-           
+            <td>
+                @Html.DisplayFor(modelItem => item.KitapciAdlariDisplay)
+            </td>
             <td>
                 @if (User.Identity.IsAuthenticated)
                 {
@@ -85,3 +159,8 @@
 }
     </tbody>
 </table>
+}
+else
+{
+    <p class="text-danger">Kitap bulunamadı</p>
+}

@@ -21,14 +21,17 @@ namespace Mvc_Odev.Controllers
         {
             using (KitapContext db = new KitapContext())
             {
+                var kitapKitapciEntity = db.KitapKitapcilar.ToList();
+                db.KitapKitapcilar.RemoveRange(kitapKitapciEntity);
+
+                var kitapcilarEntity = db.Kitapcilar.ToList();
+                db.Kitapcilar.RemoveRange(kitapcilarEntity);
+
                 var kitaplarEntity = db.Kitaplar.ToList();
                 db.Kitaplar.RemoveRange(kitaplarEntity);
 
                 var turlerEntity = db.Turler.ToList();
                 db.Turler.RemoveRange(turlerEntity);
-
-                var kitapcilarEntity = db.Kitapcilar.ToList();
-                db.Kitapcilar.RemoveRange(kitapcilarEntity);
 
                 var kullaniciDetayiEntities = db.KullaniciDetaylari.ToList();
                 db.KullaniciDetaylari.RemoveRange(kullaniciDetayiEntities);
@@ -55,6 +58,7 @@ namespace Mvc_Odev.Controllers
                     db.Database.ExecuteSqlRaw("dbcc checkident ('Roller', reseed, 0)");
                     db.Database.ExecuteSqlRaw("dbcc checkident ('Sehirler', reseed, 0)");
                     db.Database.ExecuteSqlRaw("dbcc checkident ('Ulkeler', reseed, 0)");
+                    db.Database.ExecuteSqlRaw("dbcc checkident ('Kitapcilar', reseed, 0)");
                 }
 
                 db.Turler.Add(new Tur()
@@ -85,17 +89,7 @@ namespace Mvc_Odev.Controllers
                         }
                     }
                 });
-                db.Kitapcilar.Add(new Kitapci()
-                {
-                    Adi = "A Kitabevi",
-                    SanalMi = true
-                });
-                db.Kitapcilar.Add(new Kitapci()
-                {
-                    Adi = "B Kitabevi",
-                    SanalMi = false
-                });
-
+               
                 db.Ulkeler.Add(new Ulke()
                 {
                     Adi = "Türkiye",
@@ -131,6 +125,34 @@ namespace Mvc_Odev.Controllers
                     }
                 });
 
+                db.SaveChanges();
+
+                db.Kitapcilar.Add(new Kitapci()
+                {
+                    Adi = "A Kitabevi",
+                    SanalMi = true,
+                    KitapKitapcilar = new List<KitapKitapci>()
+                    {
+                        new KitapKitapci()
+                        {
+                            KitapId = db.Kitaplar.SingleOrDefault(kitap => kitap.Adi == "BBB").Id
+                        }
+                    }
+                });
+                db.SaveChanges();
+
+                db.Kitapcilar.Add(new Kitapci()
+                {
+                    Adi = "B Kitabevi",
+                    SanalMi = false,
+                    KitapKitapcilar = new List<KitapKitapci>()
+                    {
+                        new KitapKitapci()
+                        {
+                            KitapId = db.Kitaplar.SingleOrDefault(kitap => kitap.Adi == "AAA").Id
+                        }
+                    }
+                });
                 db.SaveChanges();
 
                 db.Roller.Add(new Rol()

@@ -45,5 +45,11 @@ namespace Business.Models
         [DisplayName("Kitap Türü")]
         public string TurAdiDisplay { get; set; }
 
+        [Required(ErrorMessage = "{0} gereklidir!")]
+        [DisplayName("Kitapcılar")]
+        public List<int> KitapciIdleri { get; set; }
+
+        [DisplayName("Kitapcılar")]
+        public string KitapciAdlariDisplay { get; set; }
     }
 }

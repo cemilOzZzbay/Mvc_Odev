@@ -12,6 +12,7 @@ namespace Business.Services
     public class KitapciService : IKitapciService
     {
         public RepoBase<Kitapci, KitapContext> Repo { get; set; } = new Repo<Kitapci, KitapContext>();
+        private RepoBase<KitapKitapci, KitapContext> _kitapKitapciRepo = new Repo<KitapKitapci, KitapContext>();
 
         public Result Add(KitapciModel model)
         {
@@ -28,16 +29,15 @@ namespace Business.Services
 
         public Result Delete(int id)
         {
-            Kitapci entity = Repo.Query(kitapci => kitapci.Id == id, "KitapKitapcilar").SingleOrDefault();
+            Kitapci entity = Repo.Query("KitapKitapcilar").SingleOrDefault(kitapci => kitapci.Id == id);
             if (entity.KitapKitapcilar != null && entity.KitapKitapcilar.Count > 0)
             {
-                RepoBase<KitapKitapci, KitapContext> kitapKitapciRepo = new Repo<KitapKitapci, KitapContext>();
                 foreach (var kitapKitapci in entity.KitapKitapcilar)
                 {
-                    kitapKitapciRepo.Delete(kitapKitapci, false);
+                    _kitapKitapciRepo.Delete(kitapKitapci, false);
                 }
-                kitapKitapciRepo.Save();
-                kitapKitapciRepo.Dispose();
+                _kitapKitapciRepo.Save();
+                _kitapKitapciRepo.Dispose();
             }
             Repo.Delete(entity);
             return new SuccessResult("Kitapcı başarıyla silindi.");
@@ -64,7 +64,7 @@ namespace Business.Services
         {
             if (Repo.Query().Any(kitapci => kitapci.Adi.ToLower() == model.Adi.ToLower().Trim() && kitapci.Id != model.Id))
                 return new ErrorResult("Girdiğiniz kitapcı adına sahip kayıt bulunmaktadır!");
-            Kitapci entity = Repo.Query(kitap => kitap.Id == model.Id).SingleOrDefault();
+            Kitapci entity = Repo.Query(kitapci => kitapci.Id == model.Id).SingleOrDefault();
             entity.Adi = model.Adi.Trim();
             entity.SanalMi = model.SanalMi;
             Repo.Update(entity);
